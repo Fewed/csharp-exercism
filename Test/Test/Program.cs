@@ -7,22 +7,17 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            string test = "nopqrstuvwxyz";
-            string test2 = "The quick brown fox jumps over the lazy dog.";
-            Console.WriteLine(Pangram(test2));
+            var dt = new DateTime(2011, 4, 25);
+            var dt2 = Add(dt);
+            Console.WriteLine(dt);
+            Console.WriteLine(dt2);
         }
 
 
 
-        public static bool Pangram(string input)
+        static DateTime Add(DateTime moment)
         {
-            var alphabet = "abcdefghijklmnopqrstuvwxyz";
-            foreach (char item in input.ToLower())
-            {
-                if (alphabet.Contains(item)) alphabet = alphabet.Remove(alphabet.IndexOf(item), 1);
-            }
-
-            return alphabet == "";
+            return moment.AddSeconds(1e9);
         }
     }
 }
