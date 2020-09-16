@@ -1,0 +1,9 @@
+using System;
+
+class SpaceAge
+{
+    private double _seconds;
+    private double _k = 31557600;
+
+    public SpaceAge(int seconds) => _seconds = seconds;
+}
