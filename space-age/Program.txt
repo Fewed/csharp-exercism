@@ -37,7 +37,7 @@ namespace Test
 
             foreach (string key in dict.Keys)
             {
-                first += $"    public double On{key}() => _seconds / (_k * {dict[key]});\n\n";
+                first += $"    public double On{key}() => _seconds / (YEAR * {dict[key]});\n\n";
             }
             return first.Trim() + "\n" + last;
         }
@@ -45,11 +45,11 @@ namespace Test
         //class SpaceAge
         //{
         //    private double _seconds;
-        //    private double _k = 31557600;
+        //    private const double YEAR = 31557600d;
 
         //    public SpaceAge(int seconds) => _seconds = seconds;
 
-        //    public double onMars() => _seconds / (_k * 1.8808158);
+        //    public double onMars() => _seconds / (YEAR * 1.8808158);
         //}
     }
 }
