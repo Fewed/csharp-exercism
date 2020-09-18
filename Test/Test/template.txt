@@ -1,9 +1,0 @@
-using System;
-
-class SpaceAge
-{
-    private double _seconds;
-    private const double YEAR = 31557600d;
-
-    public SpaceAge(int seconds) => _seconds = seconds;
-}

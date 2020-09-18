@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Test
 {
@@ -8,48 +9,60 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            var planets = new Dictionary<string, double>
-            {
-                ["Earth"] = 1,
-                ["Mercury"] = 0.2408467,
-                ["Venus"] = 0.61519726,
-                ["Mars"] = 1.8808158,
-                ["Jupiter"] = 11.862615,
-                ["Saturn"] = 29.447498,
-                ["Uranus"] = 84.016846,
-                ["Neptune"] = 164.79132,
-            };
+            //var scores = new List<int> { 10, 30, 90, 30, 100, 20, 10, 0, 30, 40, 40, 70, 50 };
+            //var sc = new HighScores(scores);
+            //Print(sc.Scores());
+            //Console.WriteLine(sc.Latest());
+            //Console.WriteLine(sc.PersonalBest());
+            //Print(sc.PersonalTopThree());
+            //Print(sc.Scores());
 
-            var code = GenText("../../../template.txt", planets);
-            Console.WriteLine(code);
-            File.WriteAllText("../../../SpaceAge.cs", code);
-
-            //var sa = new SpaceAge(2129871239);
-            //var age = sa.onMars();
-            //Console.WriteLine(age);
+            var (s1, s2) = ("GGACGGATTCTG", "AGGACGGATTCT");
+            Console.WriteLine(Hamming.Distance(s1, s2));
         }
 
-        static string GenText(string path, Dictionary<string, double> dict)
+        static void Print(List<int> list)
         {
-            var srcArr = File.ReadAllText(path).Split("\n");
-            var (firstArr, lastArr) = (srcArr[..^1], srcArr[^1..]);
-            var (first, last) = (String.Join("\n", firstArr) + "\n\n", String.Join("\n", lastArr));
-
-            foreach (string key in dict.Keys)
-            {
-                first += $"    public double On{key}() => _seconds / (YEAR * {dict[key]});\n\n";
-            }
-            return first.Trim() + "\n" + last;
+            foreach (int item in list) Console.Write($"{item} ");
+            Console.Write("\n");
         }
 
-        //class SpaceAge
+
+        public static class Hamming
+        {
+            public static int Distance(string firstStrand, string secondStrand)
+            {
+                if (firstStrand.Length != secondStrand.Length) return -1;
+                var hammingDistance = 0;
+                for (int i = 0; i < firstStrand.Length; i++)
+                {
+                    if (firstStrand[i] != secondStrand[i]) hammingDistance++;
+                }
+                return hammingDistance;
+            }
+        }
+
+
+        //public class HighScores
         //{
-        //    private double _seconds;
-        //    private const double YEAR = 31557600d;
+        //    private List<int> _list;
+        //    public HighScores(List<int> list) => _list = list;
 
-        //    public SpaceAge(int seconds) => _seconds = seconds;
+        //    public List<int> Scores() => _list;
 
-        //    public double onMars() => _seconds / (YEAR * 1.8808158);
+        //    public int Latest() => _list.Last();
+
+        //    public int PersonalBest() => _list.Max();
+
+        //    public List<int> PersonalTopThree()
+        //    {
+        //        var temp = new List<int> { }; // preventing _list mutation due to sorting
+        //        foreach (int item in _list) temp.Add(item);
+        //        temp.Sort((a, b) => a <= b ? 1 : -1);
+        //        var topScoresQuantity = temp.Count < 3 ? temp.Count : 3;
+        //        return temp.GetRange(0, topScoresQuantity);
+        //    }
         //}
+
     }
 }
