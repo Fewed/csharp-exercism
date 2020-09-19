@@ -17,28 +17,40 @@ namespace Test
             //Print(sc.PersonalTopThree());
             //Print(sc.Scores());
 
-            var (s1, s2) = ("GGACGGATTCTG", "AGGACGGATTCT");
-            Console.WriteLine(Hamming.Distance(s1, s2));
+            //var expected = new Dictionary<char, int>
+            //{
+            //    ['A'] = 20,
+            //    ['C'] = 12,
+            //    ['G'] = 17,
+            //    ['T'] = 21
+            //};
+            var strand = "AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC";
+            var res = NucleotideCount.Count(strand);
+            Print(res);
         }
 
-        static void Print(List<int> list)
+        static void Print(IDictionary<char, int> dict)
         {
-            foreach (int item in list) Console.Write($"{item} ");
+            foreach (char key in dict.Keys) Console.Write($"{key}={dict[key]}, ");
             Console.Write("\n");
         }
 
 
-        public static class Hamming
+        public static class NucleotideCount
         {
-            public static int Distance(string firstStrand, string secondStrand)
+            public static IDictionary<char, int> Count(string sequence)
             {
-                if (firstStrand.Length != secondStrand.Length) return -1;
-                var hammingDistance = 0;
-                for (int i = 0; i < firstStrand.Length; i++)
+                var result = new Dictionary<char, int>
                 {
-                    if (firstStrand[i] != secondStrand[i]) hammingDistance++;
-                }
-                return hammingDistance;
+                    ['A'] = 0,
+                    ['C'] = 0,
+                    ['G'] = 0,
+                    ['T'] = 0
+                };
+
+                foreach (char item in sequence) result[item]++;
+
+                return result;
             }
         }
 
