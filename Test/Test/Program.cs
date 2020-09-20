@@ -24,33 +24,84 @@ namespace Test
             //    ['G'] = 17,
             //    ['T'] = 21
             //};
-            var strand = "AGCTTTTCATTCTGACTGCAACGGGCAATATGTCTCTGTGTGGATTAAAAAAAGAGTGTCTGATAGCAGC";
-            var res = NucleotideCount.Count(strand);
-            Print(res);
+
+
+
+            //Print(Robot.names);
+            //for (var i = 0; i < 10; i++) Robot.addName(pattern);
+            //Print(Robot.names);
+            var r = new Robot();
+            Console.WriteLine(r.Name);
+            var r2 = new Robot();
+            Console.WriteLine(r2.Name);
+            Print(Robot.names);
+            r.Reset();
+            Print(Robot.names);
+
         }
 
-        static void Print(IDictionary<char, int> dict)
+
+
+        static void Print(HashSet<string> str)
         {
-            foreach (char key in dict.Keys) Console.Write($"{key}={dict[key]}, ");
+            foreach (string item in str) Console.Write($"{item}, ");
             Console.Write("\n");
         }
 
 
-        public static class NucleotideCount
+        public class Robot
         {
-            public static IDictionary<char, int> Count(string sequence)
+            public string Name { get; private set; }
+
+            private static readonly (char type, int size)[] pattern = {
+                ('L', 2),
+                ('d', 3)
+            };
+            public static HashSet<string> names = new HashSet<string> { };
+
+            public Robot() => Name = GetName();
+
+
+
+            private static char GetRandomChar(char type)
             {
-                var result = new Dictionary<char, int>
+                var decoder = new Dictionary<char, (int, int)>
                 {
-                    ['A'] = 0,
-                    ['C'] = 0,
-                    ['G'] = 0,
-                    ['T'] = 0
+                    ['L'] = ('A', 'Z'),   // ASCII A-Z range
+                    ['d'] = ('0', '9')    // ASCII 0-9 range
                 };
+                var (min, max) = decoder[type];
+                var random = new Random();
+                return (char)random.Next(min, max + 1);
+            }
 
-                foreach (char item in sequence) result[item]++;
+            private static string GenerateName()
+            {
+                var name = "";
 
-                return result;
+                for (var i = 0; i < pattern.Length; i++)
+                {
+                    var (type, size) = pattern[i];
+                    for (var j = 0; j < size; j++) name += GetRandomChar(type);
+                }
+
+                return name;
+            }
+
+            private static string GetName()
+            {
+                string name;
+
+                do name = GenerateName();
+                while (!names.Add(name));
+
+                return name;
+            }
+
+            public void Reset()
+            {
+                names.Remove(Name);
+                Name = GetName();
             }
         }
 
