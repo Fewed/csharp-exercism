@@ -3,24 +3,24 @@ using System.Collections.Generic;
 
 public class Robot
 {
-    private readonly int _idx;
-    public string Name => names[_idx];
+    public string Name { get; private set; }
 
-    private static readonly string pattern = "L2d3";
-    public static List<string> names = new List<string> { };
+    private static readonly (char type, int size)[] pattern = {
+                ('L', 2),
+                ('d', 3)
+            };
+    public static HashSet<string> names = new HashSet<string> { };
 
-    public Robot()
-    {
-        names.Add(GetName());
-        _idx = names.Count - 1;
-    }
+    public Robot() => Name = GetName();
+
+
 
     private static char GetRandomChar(char type)
     {
         var decoder = new Dictionary<char, (int, int)>
         {
-            ['L'] = (65, 90),   // ASCII A-Z range
-            ['d'] = (48, 57)    // ASCII 0-9 range
+            ['L'] = ('A', 'Z'),   // ASCII A-Z range
+            ['d'] = ('0', '9')    // ASCII 0-9 range
         };
         var (min, max) = decoder[type];
         var random = new Random();
@@ -31,10 +31,9 @@ public class Robot
     {
         var name = "";
 
-        for (var i = 0; i < pattern.Length; i += 2)
+        for (var i = 0; i < pattern.Length; i++)
         {
-            var type = pattern[i];
-            var size = int.Parse("" + pattern[i + 1]);
+            var (type, size) = pattern[i];
             for (var j = 0; j < size; j++) name += GetRandomChar(type);
         }
 
@@ -46,10 +45,14 @@ public class Robot
         string name;
 
         do name = GenerateName();
-        while (names.Contains(name));
+        while (!names.Add(name));
 
         return name;
     }
 
-    public void Reset() => names[_idx] = GetName();
+    public void Reset()
+    {
+        names.Remove(Name);
+        Name = GetName();
+    }
 }
