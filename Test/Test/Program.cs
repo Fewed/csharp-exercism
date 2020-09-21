@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Emit;
 
 namespace Test
 {
@@ -30,80 +31,124 @@ namespace Test
             //Print(Robot.names);
             //for (var i = 0; i < 10; i++) Robot.addName(pattern);
             //Print(Robot.names);
-            var r = new Robot();
-            Console.WriteLine(r.Name);
-            var r2 = new Robot();
-            Console.WriteLine(r2.Name);
-            Print(Robot.names);
-            r.Reset();
-            Print(Robot.names);
+
+            //var r = new Robot();
+            //Console.WriteLine(r.Name);
+            //var r2 = new Robot();
+            //Console.WriteLine(r2.Name);
+            //Print(Robot.names);
+            //r.Reset();
+            //Print(Robot.names);
+
+
+            //Console.WriteLine("\a");
+            //delay();
+
+
+            //int a, b;
+            //b = a = 7;
+
+            //string c, d;
+            //c = d = "hj";
+
+            //int[] e = new int[3] {1,2,3};
+            //var f = e;
+
+
+
+            //Console.WriteLine($"a={a}, b={b}");
+            //Console.WriteLine($"c={c}, d={d}");
+            //foreach (int item in e) Console.Write($"{item}, ");
+            //Console.WriteLine();
+            //foreach (int item in f) Console.Write($"{item}, ");
+            //Console.WriteLine();
+
+            //a++;
+            //d.Replace('j','A');
+            //e[1] = 9;
+
+            //Console.WriteLine($"a={a}, b={b}");
+            //Console.WriteLine($"c={c}, d={d}");
+            //foreach (int item in e) Console.Write($"{item}, ");
+            //Console.WriteLine();
+            //foreach (int item in f) Console.Write($"{item}, ");
+            //Console.WriteLine();
+
+
+            //var a = 0b0100;
+            //var b = 0b0010;
+            //var c = 0b0001;
+            //var d = 0b0110;
+            //Console.WriteLine((a & d) == a);
+
+            //Console.WriteLine(checkAllergen((int)Allergen.Peanuts, 1));
+
+            //getAllergens(0b_0000_0010);
+
+
+            var a = new Allergies(0b_0000_0011);
+            //Console.WriteLine(a.IsAllergicTo(Allergen.Eggs));
+            //Console.WriteLine(a.IsAllergicTo(Allergen.Peanuts));
+            foreach (Allergen item in a.List()) Console.WriteLine(item);
 
         }
 
 
 
-        static void Print(HashSet<string> str)
+
+        public enum Allergen
         {
-            foreach (string item in str) Console.Write($"{item}, ");
-            Console.Write("\n");
+            Eggs,
+            Peanuts,
+            Shellfish,
+            Strawberries,
+            Tomatoes,
+            Chocolate,
+            Pollen,
+            Cats
         }
 
-
-        public class Robot
+        public class Allergies
         {
-            public string Name { get; private set; }
-
-            private static readonly (char type, int size)[] pattern = {
-                ('L', 2),
-                ('d', 3)
-            };
-            public static HashSet<string> names = new HashSet<string> { };
-
-            public Robot() => Name = GetName();
+            byte _mask;
 
 
-
-            private static char GetRandomChar(char type)
+            public Allergies(int mask)
             {
-                var decoder = new Dictionary<char, (int, int)>
-                {
-                    ['L'] = ('A', 'Z'),   // ASCII A-Z range
-                    ['d'] = ('0', '9')    // ASCII 0-9 range
-                };
-                var (min, max) = decoder[type];
-                var random = new Random();
-                return (char)random.Next(min, max + 1);
+                _mask = (byte)mask;
             }
 
-            private static string GenerateName()
+            public bool IsAllergicTo(Allergen allergen)
             {
-                var name = "";
+                var pos = 1 << (byte)allergen;
+                return (pos & _mask) == pos;
+            }
 
-                for (var i = 0; i < pattern.Length; i++)
+
+
+            public Allergen[] List()
+            {
+                var keys = Enum.GetNames(typeof(Allergen));
+
+                var vals = Enum.GetValues(typeof(Allergen)).Cast<Allergen>();
+
+
+
+                for (int i = 0; i < keys.Length; i++)
                 {
-                    var (type, size) = pattern[i];
-                    for (var j = 0; j < size; j++) name += GetRandomChar(type);
+                    if (IsAllergicTo((Allergen)i))
+                    {
+                        // vals = vals.Where(item => (int)item != 0); // works
+                        //vals = vals.Where(item => (int)item != i);
+                        vals = vals.Except(new Allergen[] { (Allergen)i });
+                    }
                 }
 
-                return name;
-            }
-
-            private static string GetName()
-            {
-                string name;
-
-                do name = GenerateName();
-                while (!names.Add(name));
-
-                return name;
-            }
-
-            public void Reset()
-            {
-                names.Remove(Name);
-                Name = GetName();
+                return vals.ToArray();
             }
         }
+
+
 
 
         //public class HighScores
