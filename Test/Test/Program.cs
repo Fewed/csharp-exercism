@@ -110,41 +110,28 @@ namespace Test
 
         public class Allergies
         {
-            byte _mask;
+            private readonly int _mask;
 
-
-            public Allergies(int mask)
-            {
-                _mask = (byte)mask;
-            }
+            public Allergies(int mask) => _mask = mask;
 
             public bool IsAllergicTo(Allergen allergen)
             {
-                var pos = 1 << (byte)allergen;
+                var pos = 1 << (int)allergen;
                 return (pos & _mask) == pos;
             }
 
-
-
             public Allergen[] List()
             {
-                var keys = Enum.GetNames(typeof(Allergen));
 
-                var vals = Enum.GetValues(typeof(Allergen)).Cast<Allergen>();
+                var allergens = Enum.GetValues(typeof(Allergen)).Cast<Allergen>();
+                var safeList = new List<Allergen> { };
 
-
-
-                for (int i = 0; i < keys.Length; i++)
+                foreach (var item in allergens)
                 {
-                    if (IsAllergicTo((Allergen)i))
-                    {
-                        // vals = vals.Where(item => (int)item != 0); // works
-                        //vals = vals.Where(item => (int)item != i);
-                        vals = vals.Except(new Allergen[] { (Allergen)i });
-                    }
+                    if (!IsAllergicTo(item)) safeList.Add(item);
                 }
 
-                return vals.ToArray();
+                return allergens.Except(safeList).ToArray();
             }
         }
 
