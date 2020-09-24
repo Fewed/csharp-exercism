@@ -85,79 +85,64 @@ namespace Test
 
             //getAllergens(0b_0000_0010);
 
+            var gs = new GradeSchool();
+            gs.Add("Mark", 2);
 
-            var a = new Allergies(0b_0000_0011);
-            //Console.WriteLine(a.IsAllergicTo(Allergen.Eggs));
-            //Console.WriteLine(a.IsAllergicTo(Allergen.Peanuts));
-            foreach (Allergen item in a.List()) Console.WriteLine(item);
+            gs.Add("Mary", 3);
+            gs.Add("Antony", 2);
+            Print2(gs._list);
+            //var twos = gs.Grade(2);
+            //Print(twos);
+            var l = gs.Roster();
+            //Print(l);
+            Print2(gs._list);
+
+
+            //var sut = new GradeSchool();
+            //sut.Add("Franklin", 5);
+            //sut.Add("Bradley", 5);
+            //sut.Add("Jeff", 1);
+            //var expected = new[] { "Bradley", "Franklin" };
+            //var real= sut.Grade(5);
 
         }
 
 
-
-
-        public enum Allergen
+        public static void Print(IEnumerable<string> list)
         {
-            Eggs,
-            Peanuts,
-            Shellfish,
-            Strawberries,
-            Tomatoes,
-            Chocolate,
-            Pollen,
-            Cats
+            foreach (var item in list) Console.Write($"{item} ");
+            Console.WriteLine();
         }
 
-        public class Allergies
+        public static void Print2(List<(string student, int grade)> list)
         {
-            private readonly int _mask;
+            foreach (var item in list) Console.Write($"{item.student}={item.grade} ");
+            Console.WriteLine();
+        }
 
-            public Allergies(int mask) => _mask = mask;
+        public class GradeSchool
+        {
+            public readonly List<(string student, int grade)> _list = new List<(string student, int grade)> { };
 
-            public bool IsAllergicTo(Allergen allergen)
+            public void Add(string student, int grade) => _list.Add((student, grade));
+
+            public IEnumerable<string> Roster()
             {
-                var pos = 1 << (int)allergen;
-                return (pos & _mask) == pos;
+                var temp = _list.ToList();
+                temp.Sort((a, b) => a.student.CompareTo(b.student));
+                temp.Sort((a, b) => a.grade.CompareTo(b.grade));
+                return temp.Select(item => item.student);
             }
 
-            public Allergen[] List()
+            public IEnumerable<string> Grade(int grade)
             {
-
-                var allergens = Enum.GetValues(typeof(Allergen)).Cast<Allergen>();
-                var safeList = new List<Allergen> { };
-
-                foreach (var item in allergens)
-                {
-                    if (!IsAllergicTo(item)) safeList.Add(item);
-                }
-
-                return allergens.Except(safeList).ToArray();
+                var temp = _list.ToList();
+                temp.Sort((a, b) => a.student.CompareTo(b.student));
+                return temp.Where(item => item.grade == grade).Select(item => item.student);
+                // can we use in C# something like javascript parameters desctructuring ?
+                // Select(({student}) => student)
             }
         }
-
-
-
-
-        //public class HighScores
-        //{
-        //    private List<int> _list;
-        //    public HighScores(List<int> list) => _list = list;
-
-        //    public List<int> Scores() => _list;
-
-        //    public int Latest() => _list.Last();
-
-        //    public int PersonalBest() => _list.Max();
-
-        //    public List<int> PersonalTopThree()
-        //    {
-        //        var temp = new List<int> { }; // preventing _list mutation due to sorting
-        //        foreach (int item in _list) temp.Add(item);
-        //        temp.Sort((a, b) => a <= b ? 1 : -1);
-        //        var topScoresQuantity = temp.Count < 3 ? temp.Count : 3;
-        //        return temp.GetRange(0, topScoresQuantity);
-        //    }
-        //}
 
     }
 }
