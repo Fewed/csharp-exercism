@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
+using System.Text.RegularExpressions;
 
 namespace Test
 {
@@ -85,62 +86,44 @@ namespace Test
 
             //getAllergens(0b_0000_0010);
 
-            var gs = new GradeSchool();
-            gs.Add("Mark", 2);
-
-            gs.Add("Mary", 3);
-            gs.Add("Antony", 2);
-            Print2(gs._list);
-            //var twos = gs.Grade(2);
-            //Print(twos);
-            var l = gs.Roster();
-            //Print(l);
-            Print2(gs._list);
-
-
-            //var sut = new GradeSchool();
-            //sut.Add("Franklin", 5);
-            //sut.Add("Bradley", 5);
-            //sut.Add("Jeff", 1);
-            //var expected = new[] { "Bradley", "Franklin" };
-            //var real= sut.Grade(5);
-
+            var a = "give me _your_ money";
+            var b = "First In, First Out";
+            Console.WriteLine(Acronym.Abbreviate2(b));
+            //var re = new Regex(@"[a-z]+");
+            //foreach (var item in re.Matches(a)) Console.Write(item+" ");
+            //Console.WriteLine(Regex.IsMatch(a, @"^[a-zA-Z]+$"));
         }
 
-
-        public static void Print(IEnumerable<string> list)
+        public static class Acronym
         {
-            foreach (var item in list) Console.Write($"{item} ");
-            Console.WriteLine();
-        }
-
-        public static void Print2(List<(string student, int grade)> list)
-        {
-            foreach (var item in list) Console.Write($"{item.student}={item.grade} ");
-            Console.WriteLine();
-        }
-
-        public class GradeSchool
-        {
-            public readonly List<(string student, int grade)> _list = new List<(string student, int grade)> { };
-
-            public void Add(string student, int grade) => _list.Add((student, grade));
-
-            public IEnumerable<string> Roster()
+            public static string Abbreviate(string phrase)
             {
-                var temp = _list.ToList();
-                temp.Sort((a, b) => a.student.CompareTo(b.student));
-                temp.Sort((a, b) => a.grade.CompareTo(b.grade));
-                return temp.Select(item => item.student);
+                var words = phrase.Split(' ', '-');
+
+                static string Process(string acc, string cur)
+                {
+                    var firstLetter = cur.ToCharArray().Where(char.IsLetter).ElementAt(0);
+                    return acc + char.ToUpper(firstLetter);
+                }
+
+                return words.Aggregate("", Process);
             }
 
-            public IEnumerable<string> Grade(int grade)
+            public static string Abbreviate2(string phrase)
             {
-                var temp = _list.ToList();
-                temp.Sort((a, b) => a.student.CompareTo(b.student));
-                return temp.Where(item => item.grade == grade).Select(item => item.student);
-                // can we use in C# something like javascript parameters desctructuring ?
-                // Select(({student}) => student)
+                var pattern = new Regex(@"[a-zA-Z]+");
+                var words = pattern.Matches(phrase).Select(item => item.ToString());
+                //foreach (var item in re.Matches(a)) Console.Write(item + " ");
+                //var words = phrase.Split(' ', '-').Where(item=>item.Contains(char.IsLetter()));
+
+                static string Process(string acc, string cur)
+                {
+                    var firstLetter = cur[0];
+                    return acc + char.ToUpper(firstLetter);
+                    
+                }
+
+                return words.Aggregate("", Process);
             }
         }
 
