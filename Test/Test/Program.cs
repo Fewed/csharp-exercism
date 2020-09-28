@@ -12,28 +12,32 @@ namespace Test
         static void Main(string[] args)
         {
             var test = new List<string> { "2234567890", "+1 (223) 456-7890" };
-            var res = test.Select(PhoneNumber.Clean);
-            foreach (var item in res) Console.Write($"{item} ");
+            //var res = test.Select(PhoneNumber.Clean);
+            //foreach (var item in res) Console.Write($"{item} ");
 
-
+            Console.WriteLine(RotationalCipher.Rotate(
+                "Gur dhvpx oebja sbk whzcf bire gur ynml qbt.", 13));
+            Console.WriteLine(RotationalCipher.Rotate("omg", 5));
         }
 
 
-
-        public class PhoneNumber
+        public static class RotationalCipher
         {
-            public static (string,bool) Clean(string phoneNumber)
+            static readonly string chars = "abcdefghijklmnopqrstuvwxyz";
+            static char GetChar(char value, int offset)
             {
-                var input = (new Regex(@"[0-9]*")).Matches(phoneNumber)
-                    .Aggregate("", (acc, cur) => acc + cur);
-
-                if ((input.Length == 11) && (input[0] == '1')) input = input[1..];
-
-                var pattern = new Regex(@"[2-9]\d{2}[2-9]\d{2}\d{4}");
-                var res = pattern.IsMatch(input);
-                return (input,res);
+                if (!char.IsLetter(value)) return value;
+                var isUpper = char.IsUpper(value);
+                value = char.ToLower(value);
+                var idx = chars.IndexOf(value) + offset;
+                if (idx >= chars.Length) idx -= chars.Length;
+                return isUpper ? char.ToUpper(chars[idx]) : chars[idx];
             }
+
+            public static string Rotate(string text, int shiftKey) =>
+                text.Aggregate("", (acc, cur) => acc + GetChar(cur, shiftKey));
         }
+
 
 
     }
