@@ -15,30 +15,79 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            Console.WriteLine(RotationalCipher.Rotate(
-                "Gur dhvpx oebja sbk whzcf bire gur ynml qbt.", 13));
-            Console.WriteLine(RotationalCipher.Rotate("omg", 5));
+            var b = new CircularBuffer<int>(5);
+
+            b.Write(1);
+            b.Write(2);
+
+            b.Write(3);
+            b.Write(4);
+            b.Write(5);
+
+            b.Read();
+            b.Write(6);
+            //b.Overwrite(6);
         }
 
 
-        public static class RotationalCipher
+
+
+        public class CircularBuffer<T>
         {
-            static readonly string chars = "abcdefghijklmnopqrstuvwxyz";
-            static char GetChar(char value, int offset)
+            List<T> buffer = new List<T> { };
+
+            //public void DisplayBuffer()
+            //{
+            //    var temp = "";
+
+            //    for (var i = 0; i < buffer.Capacity; i++)
+            //    {
+            //        var element = i < buffer.Count ? buffer[i].ToString() : "-";
+            //        temp += $"[{element}] ";
+            //    }
+
+            //    Console.WriteLine(temp);
+            //}
+
+            public CircularBuffer(int capacity)
             {
-                if (!char.IsLetter(value)) return value;
-                var isUpper = char.IsUpper(value);
-                value = char.ToLower(value);
-                var idx = chars.IndexOf(value) + offset;
-                if (idx >= chars.Length) idx -= chars.Length;
-                return isUpper ? char.ToUpper(chars[idx]) : chars[idx];
+                buffer.Capacity = capacity;
+                //DisplayBuffer();
             }
 
-            public static string Rotate(string text, int shiftKey) =>
-                text.Aggregate("", (acc, cur) => acc + GetChar(cur, shiftKey));
+
+            public T Read()
+            {
+                if (buffer.Count == 0) throw new InvalidOperationException("Buffer is empty");
+
+                var oldest = buffer[0];
+                Clear();
+                return oldest;
+            }
+
+            public void Write(T value)
+            {
+                if (buffer.Count == buffer.Capacity) throw new InvalidOperationException("Buffer overflow!");
+
+                buffer.Add(value);
+                //DisplayBuffer();
+            }
+
+            public void Overwrite(T value)
+            {
+                if (buffer.Count == buffer.Capacity) Clear();
+                Write(value);
+            }
+
+            public void Clear()
+            {
+                if (buffer.Count == 0) return;
+
+                buffer = buffer.GetRange(1, buffer.Count - 1);
+                buffer.Capacity++;
+                //DisplayBuffer();
+            }
         }
-
-
 
     }
 }
