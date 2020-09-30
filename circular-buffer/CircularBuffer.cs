@@ -18,19 +18,14 @@ public class CircularBuffer<T>
     //    Console.WriteLine(temp);
     //}
 
-    public CircularBuffer(int capacity)
-    {
-        buffer.Capacity = capacity;
-        //DisplayBuffer();
-    }
-
+    public CircularBuffer(int capacity) => buffer.Capacity = capacity;
 
     public T Read()
     {
         if (buffer.Count == 0) throw new InvalidOperationException("Buffer is empty");
 
         var oldest = buffer[0];
-        Clear();
+        DequeueHead();
         return oldest;
     }
 
@@ -44,16 +39,25 @@ public class CircularBuffer<T>
 
     public void Overwrite(T value)
     {
-        if (buffer.Count == buffer.Capacity) Clear();
+        if (buffer.Count == buffer.Capacity) DequeueHead();
         Write(value);
+    }
+
+    public void DequeueHead()
+    {
+        if (buffer.Count == 0) return;
+
+        var capacity = buffer.Capacity;
+        buffer = buffer.GetRange(1, buffer.Count - 1);
+        buffer.Capacity = capacity;
+        //DisplayBuffer();
     }
 
     public void Clear()
     {
         if (buffer.Count == 0) return;
 
-        buffer = buffer.GetRange(1, buffer.Count - 1);
-        buffer.Capacity++;
+        buffer.RemoveRange(0, buffer.Count);
         //DisplayBuffer();
     }
 }

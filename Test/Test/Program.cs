@@ -15,79 +15,55 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            var b = new CircularBuffer<int>(5);
-
-            b.Write(1);
-            b.Write(2);
-
-            b.Write(3);
-            b.Write(4);
-            b.Write(5);
-
-            b.Read();
-            b.Write(6);
-            //b.Overwrite(6);
+            var a = ScrabbleScore.Score("cabbage");
+            Console.WriteLine(a);
         }
 
 
 
-
-        public class CircularBuffer<T>
+        public static class ScrabbleScore
         {
-            List<T> buffer = new List<T> { };
+            static readonly Dictionary<char, int> dictionary = new Dictionary<char, int>
+                {
+                    {'A', 1 },
+                    {'E', 1 },
+                    {'I', 1 },
+                    {'O', 1 },
+                    {'U', 1 },
+                    {'L', 1 },
+                    {'N', 1 },
+                    {'R', 1 },
+                    {'S', 1 },
+                    {'T', 1 },
 
-            //public void DisplayBuffer()
-            //{
-            //    var temp = "";
+                    {'D', 2 },
+                    {'G', 2 },
 
-            //    for (var i = 0; i < buffer.Capacity; i++)
-            //    {
-            //        var element = i < buffer.Count ? buffer[i].ToString() : "-";
-            //        temp += $"[{element}] ";
-            //    }
+                    {'B', 3 },
+                    {'C', 3 },
+                    {'M', 3 },
+                    {'P', 3 },
 
-            //    Console.WriteLine(temp);
-            //}
+                    {'F', 4 },
+                    {'H', 4 },
+                    {'V', 4 },
+                    {'W', 4 },
+                    {'Y', 4 },
 
-            public CircularBuffer(int capacity)
-            {
-                buffer.Capacity = capacity;
-                //DisplayBuffer();
-            }
+                    {'K', 5 },
 
+                    {'J', 8 },
+                    {'X', 8 },
 
-            public T Read()
-            {
-                if (buffer.Count == 0) throw new InvalidOperationException("Buffer is empty");
+                    {'Q', 10 },
+                    {'Z', 10 },
+                };
 
-                var oldest = buffer[0];
-                Clear();
-                return oldest;
-            }
+            public static int Score(string input) =>
+                input.Aggregate(0, (acc, cur) => acc + dictionary[char.ToUpper(cur)]);
 
-            public void Write(T value)
-            {
-                if (buffer.Count == buffer.Capacity) throw new InvalidOperationException("Buffer overflow!");
-
-                buffer.Add(value);
-                //DisplayBuffer();
-            }
-
-            public void Overwrite(T value)
-            {
-                if (buffer.Count == buffer.Capacity) Clear();
-                Write(value);
-            }
-
-            public void Clear()
-            {
-                if (buffer.Count == 0) return;
-
-                buffer = buffer.GetRange(1, buffer.Count - 1);
-                buffer.Capacity++;
-                //DisplayBuffer();
-            }
         }
+
 
     }
 }
