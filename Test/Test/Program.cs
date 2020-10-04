@@ -15,32 +15,29 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            Console.WriteLine(Series.Slices("9142", 2));
-            Console.WriteLine("91 14 42");
+            Console.WriteLine(DifferenceOfSquares.CalculateSumOfSquares(0));
+            //Console.WriteLine("91 14 42");
         }
 
     }
 
 
 
-    public static class Series
+
+
+    public static class DifferenceOfSquares
     {
-        public static string[] Slices(string numbers, int sliceLength)
-        {
-            var m = numbers.Length;
-            var n = sliceLength;
-            var size = m + 1 - n;
-            var temp = new string[size];
-            for (var i = 0; i < size; i++) temp[i] = numbers[i..(i + n)];
-            return temp;
-        }
+        public static int CalculateSquareOfSum(int max) =>
+            (int)Math.Pow(Enumerable.Range(1, max).Sum(), 2);
+
+        public static int CalculateSumOfSquares(int max) =>
+            Enumerable.Range(1, max).Select(x => x * x).Sum();
+
+        public static int CalculateDifferenceOfSquares(int max) =>
+            CalculateSquareOfSum(max) - CalculateSumOfSquares(max);
     }
 
-    //var expected = new[] { "91", "14", "42" };
-    //Assert.Equal(expected, Series.Slices("9142", 2));
 
-    // 3|2=2 5|2=4  m/(n-1)-1  m/(2n-m) - (m-n) || m+1-n
-    // 5|3=3 5/(6-5) - 2 = 3
 
 
 }
