@@ -15,7 +15,7 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            Console.WriteLine(DifferenceOfSquares.CalculateSumOfSquares(0));
+            Console.WriteLine(ArmstrongNumbers.IsArmstrongNumber(153));
             //Console.WriteLine("91 14 42");
         }
 
@@ -25,17 +25,18 @@ namespace Test
 
 
 
-    public static class DifferenceOfSquares
+    public static class ArmstrongNumbers
     {
-        public static int CalculateSquareOfSum(int max) =>
-            (int)Math.Pow(Enumerable.Range(1, max).Sum(), 2);
+        public static bool IsArmstrongNumber(int number)
+        {
+            var data = number.ToString();
 
-        public static int CalculateSumOfSquares(int max) =>
-            Enumerable.Range(1, max).Select(x => x * x).Sum();
-
-        public static int CalculateDifferenceOfSquares(int max) =>
-            CalculateSquareOfSum(max) - CalculateSumOfSquares(max);
+            return data.Sum(n => (int)Math.Pow(int.Parse("" + n), data.Length)) == number;
+        }
     }
+
+
+    // 9475
 
 
 
