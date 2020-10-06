@@ -15,28 +15,39 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            Console.WriteLine(ArmstrongNumbers.IsArmstrongNumber(153));
+            Console.WriteLine(Raindrops.Convert(105));
             //Console.WriteLine("91 14 42");
         }
 
     }
 
-
-
-
-
-    public static class ArmstrongNumbers
+    public static class Raindrops
     {
-        public static bool IsArmstrongNumber(int number)
+        static Dictionary<int, string> dictionary = new Dictionary<int, string>
         {
-            var data = number.ToString();
+            {3, "Pling" },
+            {5, "Plang" },
+            {7, "Plong" },
+        };
 
-            return data.Sum(n => (int)Math.Pow(int.Parse("" + n), data.Length)) == number;
+        public static string Convert(int number)
+        {
+            var temp = "";
+            var keys = dictionary.Keys.ToList();
+            var (start, end) = (keys[0], keys[^1]);
+            start = Math.Min(start, number);
+            end = Math.Max(end, number);
+
+            for (var i = start; i <= end; i++)
+            {
+                if (dictionary.ContainsKey(i)) temp += dictionary[i];
+            }
+
+            return temp == "" ? number.ToString() : temp;
         }
     }
 
-
-    // 9475
+    // Assert.Equal("PlingPlangPlong", Raindrops.Convert(105));
 
 
 
