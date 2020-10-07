@@ -15,39 +15,56 @@ namespace Test
             //var res = test.Select(PhoneNumber.Clean);
             //foreach (var item in res) Console.Write($"{item} ");
 
-            Console.WriteLine(Raindrops.Convert(105));
-            //Console.WriteLine("91 14 42");
+            //var strings = new[]
+            //        {
+            //            "nail",
+            //            "shoe"
+            //        };
+
+            var strings = new[] { "nail", "shoe", "horse", "rider", "message", "battle", "kingdom" };
+
+            var res = Proverb.Recite(strings);
+
         }
 
     }
 
-    public static class Raindrops
+
+
+    public static class Proverb
     {
-        static Dictionary<int, string> dictionary = new Dictionary<int, string>
-        {
-            {3, "Pling" },
-            {5, "Plang" },
-            {7, "Plong" },
-        };
+        static string GetStartString(string a, string b) => $"For want of a {a} the {b} was lost.";
+        static string GetEndString(string a) => $"And all for the want of a {a}.";
 
-        public static string Convert(int number)
+        public static string[] Recite(string[] subjects)
         {
-            var temp = "";
-            var keys = dictionary.Keys.ToList();
-            var (start, end) = (keys[0], keys[^1]);
-            start = Math.Min(start, number);
-            end = Math.Max(end, number);
+            var result = new string[subjects.Length];
+            
 
-            for (var i = start; i <= end; i++)
+            for (var i = 0; i < subjects.Length-1; i++)
             {
-                if (dictionary.ContainsKey(i)) temp += dictionary[i];
+                result[i]=GetStartString(subjects[i], subjects[i + 1]);
+                
             }
 
-            return temp == "" ? number.ToString() : temp;
+            result[^1] = GetEndString(subjects[0]);
+
+            return result;
         }
     }
 
-    // Assert.Equal("PlingPlangPlong", Raindrops.Convert(105));
+
+    //var strings = new[]
+    //        {
+    //            "nail",
+    //            "shoe"
+    //        };
+    //var expected = new[]
+    //{
+    //            "For want of a nail the shoe was lost.",
+    //            "And all for the want of a nail."
+    //        };
+    //Assert.Equal(expected, Proverb.Recite(strings));
 
 
 
