@@ -11,60 +11,61 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            var test = new List<string> { "2234567890", "+1 (223) 456-7890" };
-            //var res = test.Select(PhoneNumber.Clean);
-            //foreach (var item in res) Console.Write($"{item} ");
+            //var test = new List<string> { "2234567890", "+1 (223) 456-7890" };
 
-            //var strings = new[]
-            //        {
-            //            "nail",
-            //            "shoe"
-            //        };
+            //var array = new[] { 1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 634 };
+            //var value = 144;
 
-            var strings = new[] { "nail", "shoe", "horse", "rider", "message", "battle", "kingdom" };
+            var array = new[] { 1, 3,21, 5, 8 };
+            var value = 21;
 
-            var res = Proverb.Recite(strings);
-
+            var res = BinarySearch.Find(array, value);
+            Console.WriteLine(res);
         }
 
     }
 
 
 
-    public static class Proverb
+
+
+    public static class BinarySearch
     {
-        static string GetStartString(string a, string b) => $"For want of a {a} the {b} was lost.";
-        static string GetEndString(string a) => $"And all for the want of a {a}.";
-
-        public static string[] Recite(string[] subjects)
+        public static int Find(int[] input, int value)
         {
-            var result = new string[subjects.Length];
-            
+            int GetMiddleIdx() => (int)Math.Round((float)input.Length / 2);
 
-            for (var i = 0; i < subjects.Length-1; i++)
+            if (input.Length == 0) return -1;
+
+            int idx, idxPre = -1, middleIdx;
+            idx = middleIdx = GetMiddleIdx();
+
+            while (input[middleIdx] != value)
             {
-                result[i]=GetStartString(subjects[i], subjects[i + 1]);
-                
+                if (value > input[middleIdx])
+                {
+                    input = input[middleIdx..];
+                    middleIdx = GetMiddleIdx();
+                    idx += middleIdx;
+                }
+                else
+                {
+                    input = input[..middleIdx];
+                    middleIdx = GetMiddleIdx();
+                    idx -= middleIdx;
+                }
+
+                if (idx == idxPre) return -1;
+                idxPre = idx;
             }
 
-            result[^1] = GetEndString(subjects[0]);
-
-            return result;
+            return idx;
         }
     }
 
 
-    //var strings = new[]
-    //        {
-    //            "nail",
-    //            "shoe"
-    //        };
-    //var expected = new[]
-    //{
-    //            "For want of a nail the shoe was lost.",
-    //            "And all for the want of a nail."
-    //        };
-    //Assert.Equal(expected, Proverb.Recite(strings));
+
+
 
 
 
