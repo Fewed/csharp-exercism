@@ -20,7 +20,7 @@ namespace Test
             var value = 21;
 
             //var res = BinarySearch.Find(array, value);
-            Console.WriteLine(BeerSong.G(99,2));
+            Console.WriteLine(Triangle.IsScalene(7, 3, 2));
         }
 
     }
@@ -29,57 +29,35 @@ namespace Test
 
 
 
-
-
-    public static class BeerSong
+    public static class Triangle
     {
-        public static string GetFragment(int num)
+        static bool isTriangle(double side1, double side2, double side3)
         {
-            var template1 = $"{num} bottles of beer on the wall, {num} bottles of beer.\n" +
-            $"Take one down and pass it around, {num - 1} bottles of beer on the wall.\n\n";
-
-            var template2 = $"2 bottles of beer on the wall, 2 bottles of beer.\n" +
-            $"Take one down and pass it around, 1 bottle of beer on the wall.\n\n";
-
-            var template3 = $"1 bottle of beer on the wall, 1 bottle of beer.\n" +
-             $"Take one down and pass it around, no more bottles of beer on the wall.\n\n";
-
-            var template4 = $"No more bottles of beer on the wall, no more bottles of beer.\n" +
-             $"Go to the store and buy some more, 99 bottles of beer on the wall.\n\n";
-
-            if (num == 2) return template2;
-            if (num == 1) return template3;
-            if (num == 0) return template4;
-            return template1;
+            var cond1 = (side1 > 0) && (side2 > 0) && (side3 > 0);
+            var cond2 = (side1 + side2 > side3) && (side1 + side3 > side2) && (side2 + side3 > side1);
+            return cond1 && cond2;
         }
 
-        public static string Recite(int startBottles, int takeDown)
+        public static bool IsScalene(double side1, double side2, double side3)
         {
-            var res = "";
-
-            for (var i = startBottles; i > startBottles-takeDown; i--)
-            {
-                res += GetFragment(i);
-            }
-
-            return res.Trim()
-                ;
+            var cond1 = (side1 != side2) && (side1 != side3) && (side2 != side3);
+            return isTriangle(side1, side2, side3) && cond1;
         }
 
-        public static string G(int startBottles, int takeDown)
+        public static bool IsIsosceles(double side1, double side2, double side3)
         {
-            return Enumerable.Range(startBottles-takeDown+1,takeDown).Reverse()
-           .Aggregate("", (acc, cur) => acc + " " + cur).Trim();
+            var cond1 = (side1 == side2) || (side1 == side3) || (side2 == side3);
+            return isTriangle(side1, side2, side3) && cond1;
+        }
+
+        public static bool IsEquilateral(double side1, double side2, double side3)
+        {
+            var cond1 = (side1 == side2) && (side1 == side3);
+            return isTriangle(side1, side2, side3) && cond1;
         }
     }
 
-    //var expected =
-    //            "99 bottles of beer on the wall, 99 bottles of beer.\n" +
-    //            "Take one down and pass it around, 98 bottles of beer on the wall.\n" +
-    //            "\n" +
-    //            "98 bottles of beer on the wall, 98 bottles of beer.\n" +
-    //            "Take one down and pass it around, 97 bottles of beer on the wall.";
-    //Assert.Equal(expected, BeerSong.Recite(99, 2));
+    // Assert.False(Triangle.IsScalene(7, 3, 2));
 
 
 
