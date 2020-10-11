@@ -19,45 +19,53 @@ namespace Test
             var array = new[] { 1, 3, 21, 5, 8 };
             var value = 21;
 
-            //var res = BinarySearch.Find(array, value);
-            Console.WriteLine(Triangle.IsScalene(7, 3, 2));
+            var res = Sieve.Primes(13);
+            Console.WriteLine(res);
         }
 
     }
 
 
+    //algorithm Sieve of Eratosthenes is
+    //input: an integer n > 1.
+    //output: all prime numbers from 2 through n.
+
+    //let A be an array of Boolean values, indexed by integers 2 to n,
+    //initially all set to true.
+
+    //for i = 2, 3, 4, ..., not exceeding √n do
+    //    if A[i] is true
+    //        for j = i2, i2+i, i2+2i, i2+3i, ..., not exceeding n do
+    //            A[j] := false
+
+    //return all i such that A[i] is true.
 
 
-
-    public static class Triangle
+    public static class Sieve
     {
-        static bool isTriangle(double side1, double side2, double side3)
+        public static int[] Primes(int limit)
         {
-            var cond1 = (side1 > 0) && (side2 > 0) && (side3 > 0);
-            var cond2 = (side1 + side2 > side3) && (side1 + side3 > side2) && (side2 + side3 > side1);
-            return cond1 && cond2;
-        }
+            if (limit < 2) throw new ArgumentOutOfRangeException("Out of range!");
 
-        public static bool IsScalene(double side1, double side2, double side3)
-        {
-            var cond1 = (side1 != side2) && (side1 != side3) && (side2 != side3);
-            return isTriangle(side1, side2, side3) && cond1;
-        }
+            var primes = Enumerable.Repeat(true, limit + 1).ToArray();
+            var max = Math.Floor(Math.Sqrt(limit));
 
-        public static bool IsIsosceles(double side1, double side2, double side3)
-        {
-            var cond1 = (side1 == side2) || (side1 == side3) || (side2 == side3);
-            return isTriangle(side1, side2, side3) && cond1;
-        }
+            for (var i = 2; i <= max; i++)
+            {
+                if (primes[i] == true)
+                {
+                    for (var j = i * i; j < limit + 1; j += i) primes[j] = false;
+                }
+            }
 
-        public static bool IsEquilateral(double side1, double side2, double side3)
-        {
-            var cond1 = (side1 == side2) && (side1 == side3);
-            return isTriangle(side1, side2, side3) && cond1;
+            return primes.Select((item, idx) => (item == true) && (idx != 1) ? idx : 0)
+                .Where(item => item != 0).ToArray();
         }
     }
 
-    // Assert.False(Triangle.IsScalene(7, 3, 2));
+
+    //var expected = new[] { 2, 3, 5, 7 };
+    //Assert.Equal(expected, Sieve.Primes(10));
 
 
 
