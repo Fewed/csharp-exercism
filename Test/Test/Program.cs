@@ -19,53 +19,45 @@ namespace Test
             var array = new[] { 1, 3, 21, 5, 8 };
             var value = 21;
 
-            var res = Sieve.Primes(13);
-            Console.WriteLine(res);
-        }
+            //var res = Sieve.Primes(13);
+            //Console.WriteLine(res);
 
+            var whiteQueen = QueenAttack.Create(2, 4);
+            var blackQueen = QueenAttack.Create(6, 6);
+            Console.WriteLine(QueenAttack.CanAttack(whiteQueen, blackQueen));
+        }
     }
 
 
-    //algorithm Sieve of Eratosthenes is
-    //input: an integer n > 1.
-    //output: all prime numbers from 2 through n.
-
-    //let A be an array of Boolean values, indexed by integers 2 to n,
-    //initially all set to true.
-
-    //for i = 2, 3, 4, ..., not exceeding √n do
-    //    if A[i] is true
-    //        for j = i2, i2+i, i2+2i, i2+3i, ..., not exceeding n do
-    //            A[j] := false
-
-    //return all i such that A[i] is true.
-
-
-    public static class Sieve
+    public class Queen
     {
-        public static int[] Primes(int limit)
+        public Queen(int row, int column)
         {
-            if (limit < 2) throw new ArgumentOutOfRangeException("Out of range!");
-
-            var primes = Enumerable.Repeat(true, limit + 1).ToArray();
-            var max = Math.Floor(Math.Sqrt(limit));
-
-            for (var i = 2; i <= max; i++)
-            {
-                if (primes[i] == true)
-                {
-                    for (var j = i * i; j < limit + 1; j += i) primes[j] = false;
-                }
-            }
-
-            return primes.Select((item, idx) => (item == true) && (idx != 1) ? idx : 0)
-                .Where(item => item != 0).ToArray();
+            Row = row;
+            Column = column;
         }
+
+        public int Row { get; }
+        public int Column { get; }
+    }
+
+    public static class QueenAttack
+    {
+        public static bool CanAttack(Queen white, Queen black)
+        {
+            var cond1 = white.Row == black.Row;
+            var cond2 = white.Column == black.Column;
+            var cond3 = (white.Row - black.Row) == (white.Column - black.Column);
+            return cond1 || cond2 || cond3;
+        }
+
+        public static Queen Create(int row, int column) => new Queen(row, column);
     }
 
 
-    //var expected = new[] { 2, 3, 5, 7 };
-    //Assert.Equal(expected, Sieve.Primes(10));
+    //var whiteQueen = QueenAttack.Create(2, 4);
+    //var blackQueen = QueenAttack.Create(6, 6);
+    //Assert.False(QueenAttack.CanAttack(whiteQueen, blackQueen));
 
 
 
