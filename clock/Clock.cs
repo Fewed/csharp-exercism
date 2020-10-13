@@ -31,12 +31,7 @@ public class Clock : IEquatable<Clock>
         return new Clock(hrs, mins);
     }
 
-    public bool Equals(Clock clock) => clock.ToString() == ToString();
+    public bool Equals(Clock clock) => (clock.hours == hours) && (clock.minutes == minutes);
 
-    public override string ToString()
-    {
-        var strHrs = $"{(hours < 10 ? "0" : "")}{hours}";
-        var strMins = $"{(minutes < 10 ? "0" : "")}{minutes}";
-        return $"{strHrs}:{strMins}";
-    }
+    public override string ToString() => $"{hours:D2}:{minutes:D2}";
 }
