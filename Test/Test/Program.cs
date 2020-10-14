@@ -41,24 +41,29 @@ namespace Test
         public int Column { get; }
     }
 
-    public static class QueenAttack
+
+
+    public static class Bob
     {
-        public static bool CanAttack(Queen white, Queen black)
+        static bool isQuestion(string str) => str[^1] == '?';
+        static bool isYell(string str) => str.ToUpper() == str;
+        static bool isSilence(string str) => str == "";
+
+        static string questionAnswer = "Sure.",
+            yellAnswer = "Whoa, chill out!",
+            yellQuestionAnswer = "Calm down, I know what I'm doing!",
+            silenceAnswer = "Fine. Be that way!",
+            defaultAnswer = "Whatever.";
+
+        public static string Response(string statement)
         {
-            var cond1 = white.Row == black.Row;
-            var cond2 = white.Column == black.Column;
-            var cond3 = (white.Row - black.Row) == (white.Column - black.Column);
-            return cond1 || cond2 || cond3;
+            if (isQuestion(statement) && !isYell(statement)) return questionAnswer;
+            if (!isQuestion(statement) && isYell(statement)) return yellAnswer;
+            if (isQuestion(statement) && isYell(statement)) return yellQuestionAnswer;
+            if (isSilence(statement)) return silenceAnswer;
+            return defaultAnswer;
         }
-
-        public static Queen Create(int row, int column) => new Queen(row, column);
     }
-
-
-    //var whiteQueen = QueenAttack.Create(2, 4);
-    //var blackQueen = QueenAttack.Create(6, 6);
-    //Assert.False(QueenAttack.CanAttack(whiteQueen, blackQueen));
-
 
 
 
