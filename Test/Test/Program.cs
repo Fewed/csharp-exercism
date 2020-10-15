@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -9,61 +10,68 @@ namespace Test
 {
     class Program
     {
+
+
+
+
         static void Main(string[] args)
         {
-            //var test = new List<string> { "2234567890", "+1 (223) 456-7890" };
+            var value = "([{}({}[])])";
+            Console.WriteLine(value);
+            Console.WriteLine(MatchingBrackets.IsPaired(value));
 
-            //var array = new[] { 1, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 634 };
-            //var value = 144;
+            //static void Te(ref int x) => ++x;
 
-            var array = new[] { 1, 3, 21, 5, 8 };
-            var value = 21;
-
-            //var res = Sieve.Primes(13);
-            //Console.WriteLine(res);
-
-            var whiteQueen = QueenAttack.Create(2, 4);
-            var blackQueen = QueenAttack.Create(6, 6);
-            Console.WriteLine(QueenAttack.CanAttack(whiteQueen, blackQueen));
+            //var a = 5;
+            //Console.WriteLine(a);
+            //Te(ref a);
+            //Console.WriteLine(a);
         }
-    }
 
 
-    public class Queen
-    {
-        public Queen(int row, int column)
+
+        public static class MatchingBrackets
         {
-            Row = row;
-            Column = column;
+            static void UpdateCounters(char item, Dictionary<char, int> dict)
+            {
+                var step = dict.Keys.ToList().IndexOf(item) % 2 == 0 ? 1 : -1;
+                if (dict.ContainsKey(item)) dict[item] += step;
+            }
+
+            static bool SumCounters(Dictionary<char, int> dict)
+            {
+                var values = dict.Values.ToArray();
+                for (var i = 0; i < values.Length; i += 2)
+                {
+                    if (values[i] + values[i + 1] != 0) return false;
+                }
+                return true;
+            }
+
+            public static bool IsPaired(string input)
+            {
+                var counters = new Dictionary<char, int>
+                {
+                    {'[', 0},
+                    {']', 0},
+
+                    {'{', 0},
+                    {'}', 0},
+
+                    {'(', 0},
+                    {')', 0},
+                };
+
+                foreach (var item in input) UpdateCounters(item, counters);
+
+                return SumCounters(counters);
+            }
         }
 
-        public int Row { get; }
-        public int Column { get; }
+
     }
 
 
-
-    public static class Bob
-    {
-        static bool isQuestion(string str) => str[^1] == '?';
-        static bool isYell(string str) => str.ToUpper() == str;
-        static bool isSilence(string str) => str == "";
-
-        static string questionAnswer = "Sure.",
-            yellAnswer = "Whoa, chill out!",
-            yellQuestionAnswer = "Calm down, I know what I'm doing!",
-            silenceAnswer = "Fine. Be that way!",
-            defaultAnswer = "Whatever.";
-
-        public static string Response(string statement)
-        {
-            if (isQuestion(statement) && !isYell(statement)) return questionAnswer;
-            if (!isQuestion(statement) && isYell(statement)) return yellAnswer;
-            if (isQuestion(statement) && isYell(statement)) return yellQuestionAnswer;
-            if (isSilence(statement)) return silenceAnswer;
-            return defaultAnswer;
-        }
-    }
 
 
 
