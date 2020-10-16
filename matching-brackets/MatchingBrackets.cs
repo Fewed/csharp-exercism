@@ -3,12 +3,6 @@ using System.Linq;
 
 public static class MatchingBrackets
 {
-    static void UpdateCounters(char item, Dictionary<char, int> dict)
-    {
-        var step = dict.Keys.ToList().IndexOf(item) % 2 == 0 ? 1 : -1;
-        if (dict.ContainsKey(item)) dict[item] += step;
-    }
-
     static bool SumCounters(Dictionary<char, int> dict)
     {
         var values = dict.Values.ToArray();
@@ -33,7 +27,28 @@ public static class MatchingBrackets
                     {')', 0},
                 };
 
-        foreach (var item in input) UpdateCounters(item, counters);
+        var chars = new Stack<char> { };
+        var keys = counters.Keys.ToList();
+
+        foreach (var item in input)
+        {
+            if (counters.ContainsKey(item))
+            {
+                var idx = keys.IndexOf(item);
+                var idxPre = keys.IndexOf(chars.ElementAt(chars.Count - 1));
+
+                if (idx % 2 == 0)
+                {
+                    counters[item]++;
+                    chars.Push(item);
+                }
+                else if (idx - idxPre == 1)
+                {
+                    counters[item]--;
+                    chars.Pop();
+                }
+            }
+        }
 
         return SumCounters(counters);
     }
