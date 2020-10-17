@@ -17,10 +17,11 @@ namespace Test
         static void Main(string[] args)
         {
             var value = "([{}({}[])])";
+            var ctrl = "[]{}()";
             Console.WriteLine(value);
             Console.WriteLine(MatchingBrackets.IsPaired(value));
 
-            //var st = new MyStack(new List<char> { 'q', 'w', 'e' });
+            //var st = new MyStack('q', 'w', 'e');
             //Console.WriteLine(st.Last);
             //st.Print();
             //st.Push('r');
@@ -32,10 +33,14 @@ namespace Test
         }
 
 
-        public class MyStack
+        class MyStack
         {
-            List<char> stack;
-            public MyStack(List<char> initial) => stack = initial;
+            List<char> stack = new List<char> { };
+            public MyStack(params char[] initial)
+            {
+                if (initial.Length != 0)
+                    foreach (var item in initial) stack.Add(item);
+            }
 
             public void Push(char item) => stack.Add(item);
 
@@ -43,18 +48,41 @@ namespace Test
 
             public char Last { get => stack.ElementAt(stack.Count - 1); }
 
-            public void Print()
-            {
-                var res = "";
-                foreach (var item in stack) res += $"{item} ";
-                res = res.Trim()[..^1];
-                Console.WriteLine(res);
-            }
-
+            public void Print() =>
+                Console.WriteLine(stack.Aggregate("", (acc, cur) => acc + $"{cur} ").Trim());
         }
 
         public static class MatchingBrackets
         {
+            static Dictionary<char, int> UpdateCounters(string input, Dictionary<char, int> counters)
+            {
+                var chars = new MyStack();
+                var keys = counters.Keys.ToList();
+
+                foreach (var item in input)
+                {
+                    if (keys.Contains(item))
+                    {
+                        var idx = keys.IndexOf(item);
+
+                        if (idx % 2 == 0)
+                        {
+                            counters[item]++;
+                            chars.Push(item);
+                        }
+                        else
+                        {
+                            var idxPre = keys.IndexOf(chars.Last);
+
+                            counters[item]--;
+                            if (idx - idxPre == 1) chars.Pop();
+                        }
+                    }
+                }
+
+                return counters;
+            }
+
             static bool SumCounters(Dictionary<char, int> dict)
             {
                 var values = dict.Values.ToArray();
@@ -79,45 +107,7 @@ namespace Test
                     {')', 0},
                 };
 
-                var chars = new MyStack(new List<char> { });
-                chars.Push('"');
-                var keys = counters.Keys.ToList();
-
-                foreach (var item in input)
-                {
-                    if (counters.ContainsKey(item))
-                    {
-                        var idx = keys.IndexOf(item);
-                        var lc = chars.Last;
-                        var idxPre = keys.IndexOf(lc);
-
-                        Console.WriteLine("----------------------------------");
-                        Console.WriteLine($"lc {lc}");
-                        Console.WriteLine($"idxpre-idx {idxPre} - {idx}");
-
-                        chars.Print();
-
-                        if (idx % 2 == 0)
-                        {
-                            counters[item]++;
-                            chars.Push(item);
-                        }
-                        else
-                        {
-
-                            if (idxPre - idx == 1)
-                            {
-                                counters[item]--;
-                                chars.Pop();
-                            }
-                            else chars.Push(item);
-                        }
-
-                        //Console.WriteLine($"{chars.Count} {chars.ElementAt(chars.Count-1)}");
-                    }
-                }
-
-                return SumCounters(counters);
+                return SumCounters(UpdateCounters(input, counters));
             }
         }
 
